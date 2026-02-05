@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AR Geolocation</title>
+
+  <script src="aframe.min.js"></script>
+  <script src="aframe-ar.min.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const locations = [
+        { id: "box", lat: 12.925509, lon: 77.570968 },
+        { id: "cylinder", lat: 12.925509, lon: 77.570968 },
+        { id: "sphere", lat: 12.925509, lon: 77.570968 }
+      ];
+      const threshold = 0.02;
+
+      navigator.geolocation.getCurrentPosition(pos => {
+        const { latitude, longitude } = pos.coords;
+
+        locations.forEach(loc => {
+          const el = document.querySelector(`#${loc.id}`);
+          if (
+            Math.abs(latitude - loc.lat) < threshold &&
+            Math.abs(longitude - loc.lon) < threshold
+          ) {
+            el.setAttribute("visible", true);
+          }
+        });
+      });
+    });
+  </script>
+</head>
+
+<body>
+  <h3>Location-based AR</h3>
+
+  <a-scene>
+    <a-box id="box" position="0 0.5 -3" color="red" visible="false"></a-box>
+    <a-cylinder id="cylinder" position="2 0.5 -3" color="blue" visible="false"></a-cylinder>
+    <a-sphere id="sphere" position="-2 0.75 -3" color="green" visible="false"></a-sphere>
+
+    <a-camera gps-camera rotation-reader></a-camera>
+  </a-scene>
+</body>
+</html>
